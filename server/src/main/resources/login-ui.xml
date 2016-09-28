@@ -264,7 +264,7 @@
 
     <bean id="savedRequestAwareAuthenticationDetailsSource" class="org.cloudfoundry.identity.uaa.security.SavedRequestAwareAuthenticationDetailsSource"/>
 
-    <bean id="loginAuthenticationFailureHandler" class="org.springframework.security.web.authentication.ExceptionMappingAuthenticationFailureHandler">
+    <bean id="errorMessageAuthenticationFailureHandler" class="org.springframework.security.web.authentication.ExceptionMappingAuthenticationFailureHandler">
         <property name="exceptionMappings">
             <map>
                 <entry key="org.cloudfoundry.identity.uaa.authentication.AccountNotVerifiedException" value="/login?error=account_not_verified" />
@@ -274,6 +274,10 @@
             </map>
         </property>
         <property name="defaultFailureUrl" value="/login?error=login_failure" />
+    </bean>
+
+    <bean id="loginAuthenticationFailureHandler" class="org.cloudfoundry.identity.uaa.login.AuthenticationFailureHandlerWrapper">
+      <constructor-arg name="delegate" ref="errorMessageAuthenticationFailureHandler" />
     </bean>
 
     <security:http name="verifyEmailSecurity" pattern="/verify_email" disable-url-rewriting="true"

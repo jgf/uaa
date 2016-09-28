@@ -22,6 +22,7 @@ import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -36,6 +37,10 @@ public class ZoneAwareWhitelistLogoutHandler implements LogoutSuccessHandler {
 
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+        Cookie currentUserCookie = new Cookie("Current-User", "");
+        currentUserCookie.setMaxAge(0);
+        response.addCookie(currentUserCookie);
+
         getZoneHandler().onLogoutSuccess(request, response, authentication);
     }
 
